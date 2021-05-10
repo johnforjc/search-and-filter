@@ -6,7 +6,7 @@ import Books from "./component/Books";
 
 function App() {
   const [books, setbooks] = useState([]);
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(1);
   const [perPage] = useState(10);
   const [pageCount, setPageCount] = useState(0);
 
@@ -23,6 +23,7 @@ function App() {
       })
       .then(function (myJson) {
         const slice = myJson.slice((offset - 1) * perPage, offset * perPage);
+        console.log(slice, offset, perPage);
         setbooks(slice);
         setPageCount(Math.ceil(myJson.length / perPage));
       });
