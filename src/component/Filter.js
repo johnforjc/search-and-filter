@@ -14,11 +14,13 @@ const Filter = ({ filterLanguage, languageList }) => {
 
   return (
     <div className="filter mb-4">
-      <div className="filter-header row justify-content-between align-items-center">
+      <div className="filter-header row justify-content-between align-items-center" onClick={toogleFunction}>
         <div className="col">
           <div className="fs-3 px-2">Filter Language</div>
         </div>
-        <div className="col text-end">{toogleFilterForm ? <BsFillCaretUpFill onClick={toogleFunction}></BsFillCaretUpFill> : <BsFillCaretDownFill onClick={toogleFunction}></BsFillCaretDownFill>}</div>
+        <div className="col text-end">{toogleFilterForm ? <BsFillCaretUpFill></BsFillCaretUpFill> : <BsFillCaretDownFill></BsFillCaretDownFill>}</div>
+      </div>
+      <div className="filter-form row">
         {toogleFilterForm && (
           <select name="cars" id="cars" onChange={changeState}>
             <option value="">Any</option>
@@ -30,7 +32,6 @@ const Filter = ({ filterLanguage, languageList }) => {
           </select>
         )}
       </div>
-      <div className="filter-form"></div>
     </div>
   );
 };
