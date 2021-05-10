@@ -22,7 +22,7 @@ function App() {
         return response.json();
       })
       .then(function (myJson) {
-        const slice = myJson.slice(offset, offset + perPage);
+        const slice = myJson.slice((offset - 1) * perPage, offset * perPage);
         setbooks(slice);
         setPageCount(Math.ceil(myJson.length / perPage));
       });
