@@ -11,6 +11,7 @@ function App() {
   const [pageCount, setPageCount] = useState(0);
   const [languageSelected, setlanguageSelected] = useState("");
   const [languageList, setlanguageList] = useState([]);
+  const [formSearch, setformSearch] = useState("");
 
   const getLanguageList = () => {
     fetch("language.json", {
@@ -45,16 +46,18 @@ function App() {
       })
       .then(function (myJson) {
         const bookFilter = languageSelected == "" ? myJson : myJson.filter((data) => data.language == languageSelected);
-        const slice = bookFilter.slice((offset - 1) * perPage, offset * perPage);
+        console.log(formSearch);
+        const bookSearch = formSearch == "" ? bookFilter : bookFilter.filter((data) => data.title.search(formSearch) != -1);
+        const slice = bookSearch.slice((offset - 1) * perPage, offset * perPage);
         console.log(slice, offset, perPage);
         setbooks(slice);
-        setPageCount(Math.ceil(bookFilter.length / perPage));
+        setPageCount(Math.ceil(bookSearch.length / perPage));
       });
   };
 
   useEffect(() => {
     getData();
-  }, [offset, languageSelected]);
+  }, [offset, languageSelected, formSearch]);
 
   const handlePageClick = (e) => {
     const selectedPage = e.selected;
@@ -65,10 +68,14 @@ function App() {
     setlanguageSelected(selected);
   };
 
+  const searchSetting = (param) => {
+    setformSearch(param);
+  };
+
   return (
     <div id="myApp" className="container p-5 my-5">
       <Filter filterLanguage={filterLanguage} languageList={languageList}></Filter>
-      <Search></Search>
+      <Search searchSetting={searchSetting}></Search>
       <Books books={books}></Books>
       <ReactPaginate
         previousLabel={"prev"}
