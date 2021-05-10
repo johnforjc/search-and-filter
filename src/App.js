@@ -9,6 +9,28 @@ function App() {
   const [offset, setOffset] = useState(1);
   const [perPage] = useState(10);
   const [pageCount, setPageCount] = useState(0);
+  const [languageSelected, setlanguageSelected] = useState("");
+  const [languageList, setlanguageList] = useState([]);
+
+  const getLanguageList = () => {
+    fetch("language.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        console.log(response);
+        return response.json();
+      })
+      .then(function (myJson) {
+        setlanguageList(myJson);
+      });
+  };
+
+  useEffect(() => {
+    getLanguageList();
+  }, []);
 
   const getData = () => {
     fetch("book.json", {
@@ -22,25 +44,30 @@ function App() {
         return response.json();
       })
       .then(function (myJson) {
-        const slice = myJson.slice((offset - 1) * perPage, offset * perPage);
+        const bookFilter = languageSelected == "" ? myJson : myJson.filter((data) => data.language == languageSelected);
+        const slice = bookFilter.slice((offset - 1) * perPage, offset * perPage);
         console.log(slice, offset, perPage);
         setbooks(slice);
-        setPageCount(Math.ceil(myJson.length / perPage));
+        setPageCount(Math.ceil(bookFilter.length / perPage));
       });
   };
 
   useEffect(() => {
     getData();
-  }, [offset]);
+  }, [offset, languageSelected]);
 
   const handlePageClick = (e) => {
     const selectedPage = e.selected;
     setOffset(selectedPage + 1);
   };
 
+  const filterLanguage = (selected) => {
+    setlanguageSelected(selected);
+  };
+
   return (
     <div id="myApp" className="container p-5 my-5">
-      <Filter></Filter>
+      <Filter filterLanguage={filterLanguage} languageList={languageList}></Filter>
       <Search></Search>
       <Books books={books}></Books>
       <ReactPaginate
